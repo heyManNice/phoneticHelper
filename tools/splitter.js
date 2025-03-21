@@ -47,6 +47,8 @@ class Splitter {
         const json = this.readFile();
         const json_split={};
         let counterSingle=0;
+        let counterIllegal=0;
+        let counterRepeat=0;
         for(let key in json){
             const words = key.split(/[\s-]/).filter((word)=>{
                 const regex = /[a-zA-Z]/;
@@ -54,15 +56,15 @@ class Splitter {
             });
             if(words.length===1){
                 //只有一个单词的情况
-                json_split[key]=json[key];
+                json_split[key]=this.trimBrackets(json[key]);
                 counterSingle++;
                 continue;
             }
 
             //去除音标两边的[]符号
             const obj = json[key];
-            obj.vc_phonetic_us = obj.vc_phonetic_us.replace(/\[|\]/g, '');
-            obj.vc_phonetic_uk = obj.vc_phonetic_uk.replace(/\[|\]/g, '');
+            obj.vc_phonetic_us = this.trimBrackets(obj.vc_phonetic_us);
+            obj.vc_phonetic_uk = this.trimBrackets(obj.vc_phonetic_uk);
             
             //分割音符
             const us_phonetics = obj.vc_phonetic_us.split(/[\s-]/).filter((phonetic)=>{
@@ -73,7 +75,8 @@ class Splitter {
             });
             //如果美音和英音的音标数量不一致，则跳过
             if(us_phonetics.length!==uk_phonetics.length){
-                json_split[key]=json[key];
+                json_split[key]=this.trimBrackets(json[key]);
+                counterIllegal++;
                 continue; 
             }
             
@@ -81,6 +84,13 @@ class Splitter {
                 const word = words[i];
                 const us_phonetic = us_phonetics[i];
                 const uk_phonetic = uk_phonetics[i];
+                //如果单词已经存在，则跳过
+                if(json_split[word]){
+                    counterRepeat++;
+                    console.log(word);
+                    
+                    continue;
+                }
                 json_split[word]={
                     vc_phonetic_us: us_phonetic,
                     vc_phonetic_uk: uk_phonetic,
@@ -88,10 +98,30 @@ class Splitter {
             }
         }
         console.log(`单个单词数量:${counterSingle}`);
-        
+        console.log(`无法解析短语数量:${counterIllegal}`);
+        console.log(`分词时遇到重复单词数量:${counterRepeat}`);
         console.log(`分词之前:${Object.keys(json).length}`);
         console.log(`分词之后:${Object.keys(json_split).length}`);
         this.saveFile(json_split);
+    }
+    /**
+     * 去除字符中的括号
+     * 可以传入Object或者String
+     */
+    trimBrackets(data){
+        const myTrim = (str)=>{
+            return str.replace(/\[|\]/g, '');
+        }
+        if(typeof data !== 'string'){
+            if(data.vc_phonetic_us){
+                data.vc_phonetic_us = myTrim(data.vc_phonetic_us);
+            }
+            if(data.vc_phonetic_uk){
+                data.vc_phonetic_uk = myTrim(data.vc_phonetic_uk); 
+            }
+            return data;
+        }
+        return myTrim(data);
     }
 }
 
