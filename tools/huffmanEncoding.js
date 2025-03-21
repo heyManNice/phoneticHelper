@@ -15,13 +15,15 @@ const fs = require('fs');
 const path = require('path');
 
 /**
- * 编码映射
+ * 节点
  */
-class CodeMap {
-    constructor() {
-        this.map = {};
+class Node {
+    constructor(value,char) {
+        this.value = value;
+        this.char = char;
+        this.left = null;
+        this.right = null;
     }
-
 }
 
 /**
@@ -30,6 +32,59 @@ class CodeMap {
 
 class hmEncoder{
     constructor(){}
+    /**
+     * 从对象字符出现次数数据中生成huffman树
+     * @param {Object} countData 字符出现次数数据
+     * @returns {Node} 根节点
+     */
+    buildHuffmanTree(countData){
+        const nodes = [];
+        //初始化节点
+        for(const char in countData){
+            const node = new Node(countData[char], char);
+            nodes.push(node);
+        }
+        //构建huffman树
+        while(nodes.length > 1){
+            nodes.sort((a, b) => {
+                return a.value - b.value;
+            });
+            const left = nodes.shift();
+            const right = nodes.shift();
+            const parent = new Node(left.value + right.value);
+            parent.left = left;
+            parent.right = right;
+            nodes.push(parent);
+        }
+        return nodes[0];
+    }
+    /**
+     * 从huffman树中生成编码映射
+     * @param {Node} root 根节点
+     * @returns {Object} 编码映射
+     */
+    buildCodeMap(root){
+        const map = {};
+        this.buildCodeMapRecursive(root, "", map);
+        return map; 
+    }
+    /**
+     * 生成编码映射递归函数
+     * @param {Node} root 根节点
+     * @param {String} code 编码
+     * @param {Object} map 编码映射
+     */
+    buildCodeMapRecursive(root, code, map){
+        if(!root){
+            return;
+        }
+        if(root.char){
+            map[root.char] = code;
+            return;
+        }
+        this.buildCodeMapRecursive(root.left, code + "0", map);
+        this.buildCodeMapRecursive(root.right, code + "1", map);
+    }
     
     /**
      * 获取字符出现的次数
@@ -125,7 +180,11 @@ function test(){
 
     const encoder = new hmEncoder();
     const cc = encoder.getCharCountFromJson(json);
-    console.log(cc);
+    
+    const tree = encoder.buildHuffmanTree(cc);
+    const map = encoder.buildCodeMap(tree);
+    console.log(map);
+    
 }
 
 if(require.main === module){
@@ -134,7 +193,6 @@ if(require.main === module){
 
 
 module.exports = {
-    CodeMap,
     hmEncoder,
     hmDecoder 
 }
