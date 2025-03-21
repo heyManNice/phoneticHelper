@@ -31,7 +31,13 @@ class Node {
  */
 
 class hmEncoder{
-    constructor(){}
+    constructor(){
+        this.fileOp = new FileOp();
+        this.json = this.fileOp.readJsonFile("./data/words-split.json");
+    }
+    /**
+     * 生成huffman编码二进制文件和编码映射文件
+     */
     /**
      * 从对象字符出现次数数据中生成huffman树
      * @param {Object} countData 字符出现次数数据
@@ -102,21 +108,20 @@ class hmEncoder{
         return map;
     }
     /**
-     * 获取json数据中对应字段字符出现的次数
+     * 获取json数据中对应字段的所有文本
      */
-    getCharCountFromJson(json, field){
+    getTextFromJson(json, field){
         let string="";
         for(const key in json){
             if(!field){
-                string += key;
+                string += key + "◇"; 
             }else{
-                string += json[key][field]
+                string += json[key][field] + "◇";   
             }
         }
-        const counters = this.getCharCount(string);
-        //添加分隔符
-        counters["◇"] = Object.keys(json).length;
-        return counters;
+        //去除最后一个分隔符
+        string = string.slice(0, -1);
+        return string;
     }
 }
 
@@ -173,17 +178,6 @@ class FileOp{
 
 
 function test(){
-    const fo = new FileOp();
-    const json = fo.readJsonFile("./data/words-split.json");
-    //const symbols = fo.collectPhoneticSymbols(json);
-    //fo.writeFile("./data/symbols.txt", symbols);
-
-    const encoder = new hmEncoder();
-    const cc = encoder.getCharCountFromJson(json);
-    
-    const tree = encoder.buildHuffmanTree(cc);
-    const map = encoder.buildCodeMap(tree);
-    console.log(map);
     
 }
 
