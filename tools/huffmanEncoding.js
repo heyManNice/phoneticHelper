@@ -38,6 +38,36 @@ class hmEncoder{
     /**
      * 生成huffman编码二进制文件和编码映射文件
      */
+    encode(field, output){
+        const text = this.getTextFromJson(this.json,field);
+        const counts = this.getCharCount(text);
+        const tree = this.buildHuffmanTree(counts);
+        const codeMap = this.buildCodeMap(tree);
+        const binaryStr = this.encodeText(text, codeMap); 
+        //把字符转换为二进制
+        const binaryBuffer = Buffer.alloc(Math.ceil(binaryStr.length / 8));
+        for (let i = 0; i < binaryStr.length; i += 8) {
+            const byteStr = binaryStr.slice(i, i + 8).padEnd(8, '0');
+            binaryBuffer.writeUInt8(parseInt(byteStr, 2), i / 8);
+        }
+        fs.writeFileSync(output, binaryBuffer);
+        console.log("generated:"+output);
+    }
+    /**
+     * 生成huffman编码二进制文件和编码映射文件
+     * @param {String} text 字段名
+     * @param {Object} codeMap 编码映射
+     */
+    encodeText(text, codeMap){
+        let binary = "";
+        for(const i in text){
+            const char = text[i];
+            const code = codeMap[char];
+            binary += code;
+        }
+        return binary;
+    }
+
     /**
      * 从对象字符出现次数数据中生成huffman树
      * @param {Object} countData 字符出现次数数据
@@ -120,6 +150,9 @@ class hmEncoder{
             }else{
                 const value = json[key][field];
                 if(!value){
+                    console.log(json[key]);
+                    console.log(key);
+                    
                     throw new Error(`field not found: ${field}`);
                 }
                 string += value + "◇";   
@@ -185,7 +218,9 @@ class FileOp{
 
 function test(){
     const encoder = new hmEncoder();
-    encoder.encodeWords();
+    encoder.encode(null, "./data/words.bin");
+    encoder.encode("vc_phonetic_us", "./data/us.bin");
+    encoder.encode("vc_phonetic_uk", "./data/uk.bin");
 }
 
 if(require.main === module){
