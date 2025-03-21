@@ -118,7 +118,11 @@ class hmEncoder{
             if(!field){
                 string += key + "◇"; 
             }else{
-                string += json[key][field] + "◇";   
+                const value = json[key][field];
+                if(!value){
+                    throw new Error(`field not found: ${field}`);
+                }
+                string += value + "◇";   
             }
         }
         //去除最后一个分隔符
@@ -180,7 +184,8 @@ class FileOp{
 
 
 function test(){
-    
+    const encoder = new hmEncoder();
+    encoder.encodeWords();
 }
 
 if(require.main === module){
