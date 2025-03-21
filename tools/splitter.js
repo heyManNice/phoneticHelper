@@ -84,6 +84,9 @@ class Splitter {
                 const word = words[i];
                 const us_phonetic = us_phonetics[i];
                 const uk_phonetic = uk_phonetics[i];
+                if(!word || !us_phonetic || !uk_phonetic){
+                   continue; 
+                }
                 //如果单词已经存在，则跳过
                 if(json_split[word]){
                     counterRepeat++;
