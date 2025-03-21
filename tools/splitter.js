@@ -87,8 +87,6 @@ class Splitter {
                 //如果单词已经存在，则跳过
                 if(json_split[word]){
                     counterRepeat++;
-                    console.log(word);
-                    
                     continue;
                 }
                 json_split[word]={
