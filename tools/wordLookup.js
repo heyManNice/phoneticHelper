@@ -126,6 +126,6 @@ class WordLookup {
     }
 }
 const wordLookup = new WordLookup({
-    input: "./data/words.json"
+    input: "./data/words-split.json"
 })
 wordLookup.run();
