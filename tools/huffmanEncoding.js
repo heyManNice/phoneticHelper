@@ -94,6 +94,8 @@ class hmEncoder{
     
     /**
      * 获取字符出现的次数
+     * @param {String} str 字符串
+     * @returns {Object} 字符出现的次数
      */
     getCharCount(str){
         const map = {};
