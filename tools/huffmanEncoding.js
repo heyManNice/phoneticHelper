@@ -29,7 +29,40 @@ class CodeMap {
  */
 
 class hmEncoder{
-
+    constructor(){}
+    
+    /**
+     * 获取字符出现的次数
+     */
+    getCharCount(str){
+        const map = {};
+        for(const i in str){
+            const char = str[i];
+            if(!map[char]){
+                map[char] = 1;
+            }else{
+                map[char]++;
+            }
+        }
+        return map;
+    }
+    /**
+     * 获取json数据中对应字段字符出现的次数
+     */
+    getCharCountFromJson(json, field){
+        let string="";
+        for(const key in json){
+            if(!field){
+                string += key;
+            }else{
+                string += json[key][field]
+            }
+        }
+        const counters = this.getCharCount(string);
+        //添加分隔符
+        counters["◇"] = Object.keys(json).length;
+        return counters;
+    }
 }
 
 
@@ -87,8 +120,12 @@ class FileOp{
 function test(){
     const fo = new FileOp();
     const json = fo.readJsonFile("./data/words-split.json");
-    const symbols = fo.collectPhoneticSymbols(json);
-    fo.writeFile("./data/symbols.txt", symbols);
+    //const symbols = fo.collectPhoneticSymbols(json);
+    //fo.writeFile("./data/symbols.txt", symbols);
+
+    const encoder = new hmEncoder();
+    const cc = encoder.getCharCountFromJson(json);
+    console.log(cc);
 }
 
 if(require.main === module){
