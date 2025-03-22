@@ -6,14 +6,6 @@
  * 不使用这个方法了！最后整出来的大小和zip差不多，而且维护性更差！
  */
 
-/**
- * 分割符号:
- * |
- * 所有小写字母符号:
- * abcdefghijklmnopqrstuvwxyz
- * 所有英文音标符号:(根据数据文件生成)
- * supɚˈiʃz:ərfɔʌmbdɪoʊnɑtɒðweθŋkæɜɡlˌahɝvjɛ ʒg() ̃
- */
 
 const fs = require('fs');
 const path = require('path');
