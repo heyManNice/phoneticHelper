@@ -11,3 +11,6 @@
 .ph-span{
     cursor: pointer;
 }
+.ph-span:hover{
+    outline: 1px solid rgba(0, 0, 0, 0.3);
+}
