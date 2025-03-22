@@ -26,7 +26,7 @@ class PhoneticHerper {
      * 弹窗显示单词信息
      * @param {HTMLElement}单词所在的元素
      */
-    popup(element){
+    async popup(element){
         console.log("popup:"+element.innerText);
         let popup = document.querySelector("#phoneticHelper-popup");
         if(!popup){
@@ -35,7 +35,9 @@ class PhoneticHerper {
             document.body.appendChild(popup);
         }
         //设置单词
-        popup.innerText = element.innerText;
+        const res = await this.query(element.innerText.toLowerCase());
+        const us = res?res.us:"not found";
+        popup.innerText = `/${us}/`
         popup.style.display = "block";//先显示才获取大小信息
 
         //单词与弹窗间隔
