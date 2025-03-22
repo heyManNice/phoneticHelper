@@ -128,6 +128,18 @@ class PhoneticHerper {
             })
         }) 
     }
+    /**
+     * 向后台脚本发生单词查询信息
+     * @param {String} word 单词
+     * @returns {Promise} 单词音标信息
+     */
+    query(word){
+        return new Promise((resolve,reject)=>{
+            chrome.runtime.sendMessage({type:"query",word:word},(response)=>{
+                resolve(response);
+            })
+        })
+    }
 }
 
 const phoneticHelper = new PhoneticHerper();
