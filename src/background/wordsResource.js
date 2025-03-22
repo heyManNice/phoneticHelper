@@ -1,8 +1,6 @@
-const wordsResource = {
+export default {
     a:{
         uk:"lʊk",
         us:"lʊk",
     }
 }
-
-export default wordsResource;
