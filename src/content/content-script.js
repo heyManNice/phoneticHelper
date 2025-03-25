@@ -131,7 +131,7 @@ class PhoneticHerper {
      */
     async popup(element){
         //设置单词
-        const res = await this.query(element.innerText.toLowerCase());
+        const res = await this.query(element.innerText);
         const us = res?res.us:"not found";
         this.popupElement.innerText = `/${us}/`
         this.popupElement.style.display = "block";//先显示才获取大小信息
