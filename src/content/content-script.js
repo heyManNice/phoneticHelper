@@ -3,7 +3,17 @@
 class PhoneticHerper {
     constructor() {
         this.print("Script loaded");
+        this.init();
         this.checkNewWords();
+    }
+    /**
+     * 初始化代码
+     * 
+     */
+    init(){
+        this.popupElement = document.createElement("div");
+        this.popupElement.id = "phoneticHelper-popup";
+        document.body.appendChild(this.popupElement);
     }
     /**
      * 检测网页上还没有被处理的单词
@@ -85,36 +95,26 @@ class PhoneticHerper {
      * @param {HTMLElement}单词所在的元素
      */
     async popup(element){
-        console.log("popup:"+element.innerText);
-        let popup = document.querySelector("#phoneticHelper-popup");
-        if(!popup){
-            popup = document.createElement("div");
-            popup.id = "phoneticHelper-popup";
-            document.body.appendChild(popup);
-        }
         //设置单词
         const res = await this.query(element.innerText.toLowerCase());
         const us = res?res.us:"not found";
-        popup.innerText = `/${us}/`
-        popup.style.display = "block";//先显示才获取大小信息
+        this.popupElement.innerText = `/${us}/`
+        this.popupElement.style.display = "block";//先显示才获取大小信息
 
         //单词与弹窗间隔
         const space = 10;
 
         //获取位置信息
         const rect = element.getBoundingClientRect();
-        const wordTop = rect.top;
-        const wordLeft = rect.left;
-        const wordWidth = rect.width;
-        const popupWidth = popup.offsetWidth;
-        const popupHeight = popup.offsetHeight;
+        const popupWidth = this.popupElement.offsetWidth;
+        const popupHeight = this.popupElement.offsetHeight;
         //设置位置
-        let popupLeft = wordLeft + wordWidth / 2 - popupWidth / 2;//左右居中
-        let popupTop = wordTop - popup.offsetHeight - space;//在单词上方
+        const popupLeft = rect.left + rect.width / 2 - popupWidth / 2;//左右居中
+        const popupTop = rect.top - this.popupElement.offsetHeight - space;//在单词上方
 
-        //生效
-        popup.style.left = popupLeft + "px";
-        popup.style.top = popupTop + "px";
+        //位置生效
+        this.popupElement.style.left = popupLeft + "px";
+        this.popupElement.style.top = popupTop + "px";
     }
     /**
      * 隐藏弹窗
