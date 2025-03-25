@@ -20,5 +20,9 @@
           "<all_urls>"
         ]
       }
-    ]
+    ],
+    "action": {
+      "default_title": "test",
+      "default_popup": "/settings/settings.html"
+    }
   }
