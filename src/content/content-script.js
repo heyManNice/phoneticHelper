@@ -3,19 +3,19 @@
 class PhoneticHerper {
     constructor() {
         this.print("Script loaded");
-        const now = Date.now();
         this.checkNewWords();
-        this.print(`Checked new words in ${Date.now() - now}ms`);
     }
     /**
      * 检测网页上还没有被处理的单词
      * 为其绑定事件
      */
     checkNewWords(){
+        const now = Date.now();
         const textNodes = this.getAllTextNodes(document.body);
         this.wrapWords(textNodes);
-        const spanList = document.querySelectorAll(".ph-span");
+        const spanList = document.querySelectorAll(".ph-span:not(.ph-checked):not(#phoneticHelper-popup *)");
         this.bindEvents(spanList);
+        this.print(`Found ${spanList.length} new words in ${Date.now() - now}ms`);
     }
 
     /**
@@ -137,6 +137,7 @@ class PhoneticHerper {
             element.addEventListener("mouseleave",()=>{
                 this.hidePopup();
             });
+            element.classList.add("ph-checked");
         }
     }
     /**
