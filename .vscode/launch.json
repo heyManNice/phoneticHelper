@@ -19,7 +19,7 @@
             "name": "Launch Edge and Open DevTools",
             "request": "launch",
             "type": "msedge",
-            "url": "https://www.baidu.com",
+            "url": "https://developer.chrome.com/docs/extensions/develop",
             "webRoot": "${workspaceFolder}",
             "runtimeArgs": [
                 "--disable-extensions-except=${workspaceFolder}/src",
