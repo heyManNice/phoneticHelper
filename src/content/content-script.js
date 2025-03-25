@@ -162,10 +162,7 @@ class PhoneticHerper {
      * 隐藏弹窗
      */
     hidePopup(){
-        const popup = document.querySelector("#phoneticHelper-popup");
-        if(popup){
-            popup.style.display = "none";
-        }
+        this.popupElement.style.display = "none";
     }
     /**
      * 向目标元素添加监听事件
