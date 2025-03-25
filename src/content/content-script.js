@@ -22,14 +22,14 @@ class PhoneticHerper {
         //监听body的变化
         const config = { childList: true, subtree: true, attributes: false };
         const observer = new MutationObserver((mutationsList) => {
+            if(mutationsList.length < 10){
+                return;
+            }
             const isPluginRelated = mutationsList.some((mutation) => 
                 mutation.target.closest('#phoneticHelper-popup')
             );
             if(isPluginRelated){
                 return; 
-            }
-            if(mutationsList.length < 10){
-                return;
             }
             debounceCheckNewWords();
         });
