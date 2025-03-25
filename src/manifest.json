@@ -22,7 +22,7 @@
       }
     ],
     "action": {
-      "default_title": "test",
+      "default_title": "Settings",
       "default_popup": "/settings/settings.html"
     }
   }
