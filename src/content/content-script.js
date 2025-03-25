@@ -11,9 +11,44 @@ class PhoneticHerper {
      * 
      */
     init(){
+        //添加弹出框元素
         this.popupElement = document.createElement("div");
         this.popupElement.id = "phoneticHelper-popup";
         document.body.appendChild(this.popupElement);
+
+        //防抖的加载新单词
+        const debounceCheckNewWords = this.debounce(this.checkNewWords.bind(this), 500);
+
+        //监听body的变化
+        const config = { childList: true, subtree: true, attributes: false };
+        const observer = new MutationObserver((mutationsList) => {
+            const isPluginRelated = mutationsList.some((mutation) => 
+                mutation.target.closest('#phoneticHelper-popup')
+            );
+            if(isPluginRelated){
+                return; 
+            }
+            if(mutationsList.length < 10){
+                return;
+            }
+            debounceCheckNewWords();
+        });
+        observer.observe(document.body, config);
+          
+    }
+    /**
+     * 防抖函数
+     * @param {Function} func
+     * @param {Number} wait
+     * @returns
+     */
+    debounce(func, wait) {
+        let timeout;
+        return function (...args) {
+            const context = this;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(context, args), wait);
+        }; 
     }
     /**
      * 检测网页上还没有被处理的单词
