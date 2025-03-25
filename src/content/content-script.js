@@ -2,13 +2,20 @@
 
 class PhoneticHerper {
     constructor() {
-        console.log("[phoneticHelper] Script loaded");
-        console.time("[phoneticHelper] Initialization time");
+        this.print("Script loaded");
+        const now = Date.now();
+        this.checkNewWords();
+        this.print(`Checked new words in ${Date.now() - now}ms`);
+    }
+    /**
+     * 检测网页上还没有被处理的单词
+     * 为其绑定事件
+     */
+    checkNewWords(){
         const textNodes = this.getAllTextNodes(document.body);
         this.wrapWords(textNodes);
         const spanList = document.querySelectorAll(".ph-span");
         this.bindEvents(spanList);
-        console.timeEnd("[phoneticHelper] Initialization time");
     }
 
     /**
@@ -143,6 +150,12 @@ class PhoneticHerper {
                 resolve(response);
             })
         })
+    }
+    /**
+     * 打印信息
+     */
+    print(...args){
+        console.log("[phoneticHelper]",...args); 
     }
 }
 
