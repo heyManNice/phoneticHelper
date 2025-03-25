@@ -143,9 +143,16 @@ class PhoneticHerper {
         const rect = element.getBoundingClientRect();
         const popupWidth = this.popupElement.offsetWidth;
         const popupHeight = this.popupElement.offsetHeight;
+
         //设置位置
-        const popupLeft = rect.left + rect.width / 2 - popupWidth / 2;//左右居中
-        const popupTop = rect.top - this.popupElement.offsetHeight - space;//在单词上方
+        const popupLeft = rect.left + (rect.width - popupWidth) / 2;//左右居中
+        let popupTop = rect.top - popupHeight - space;//在单词上方
+
+        
+        //如果弹窗顶部超出屏幕，则调整位置到下方
+        if(popupTop < 0){
+            popupTop = rect.bottom + space;
+        }
 
         //位置生效
         this.popupElement.style.left = popupLeft + "px";
