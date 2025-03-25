@@ -1,8 +1,21 @@
 import words from "./wordsResource.js";
 
-class PhoneticHelperBackground {
+class QueryExecutor {
     constructor(options) {
         
+    }
+    /**
+     * 事件的入口函数
+     * @param request 
+     * @param sender
+     * @returns {string} 音标结果
+     */
+    onEvent(request, sender) {
+        let result = this.query(request.word);
+        if (!result) {
+            result = this.queryAdvanced(request.word);
+        }
+        return result;
     }
     /**
      * 查询单词的音标
@@ -83,17 +96,15 @@ class PhoneticHelperBackground {
     }
 
 }
-const phb = new PhoneticHelperBackground();
+
+
+const querier = new QueryExecutor();
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     switch (request.type) {
         // 处理查询请求
         case "query":
-            let result = phb.query(request.word);
-            if (!result) {
-                result = phb.queryAdvanced(request.word);
-            }
-            sendResponse(result);
+            sendResponse(querier.onEvent(request, sender));
             break; 
     }
 });
