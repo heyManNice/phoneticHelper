@@ -24,5 +24,8 @@
     "action": {
       "default_title": "Settings",
       "default_popup": "/popup/popup.html"
-    }
+    },
+    "permissions": [
+        "storage"
+    ]
   }

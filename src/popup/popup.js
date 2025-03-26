@@ -5,7 +5,40 @@ class PhoneticHelperSettings{
             //window.close();
         })
         this.options = this.initOptions();
-        this.render();
+        this.loadAllSettings(()=>{
+            this.render();
+        });
+        
+    }
+    /**
+     * 储存设置
+     * @param {string} key 键
+     * @param {any} value 值
+     */
+     
+    save(key,value){
+        chrome.storage.local.set({[key]:value},()=>{
+            console.log(key,value);
+        });
+    }
+    /**
+     * 加载所有设置后执行操作
+     * @param {Function} callback 回调函数
+     */
+    loadAllSettings(callback){
+        chrome.storage.local.get(null,(res)=>{
+            for(const key in res){
+                console.log(key,res[key]);
+                const option = this.options.find((option)=>option.id === key);
+                if(option){
+                    option.value = res[key];
+                }
+                
+            }
+            if(callback){
+                callback(); 
+            }
+        });
     }
     /**
      * 初始化选项
@@ -13,15 +46,17 @@ class PhoneticHelperSettings{
     initOptions(){
         return [
             {
+                id:"enable",
                 name:"启用",
                 type:"checkbox",
                 value:true,
                 description:"启用插件",
                 onChange:(value)=>{
-                    console.log(value);
+                    this.save("enable",value);
                 }
             },
             {
+                id:"phonetic",
                 name:"音标发音",
                 type:"select",
                 value:"us",
@@ -37,79 +72,87 @@ class PhoneticHelperSettings{
                 ],
                 description:"选择音标发音",
                 onChange:(value)=>{
-                    console.log(value);
+                    this.save("phonetic",value);
                 } 
             },
             {
+                id:"popupColor",
                 name:"弹窗背景颜色",
                 type:"color",
                 value:"#000000",
                 description:"选择弹窗背景颜色",
                 onChange:(value)=>{
-                    console.log(value);
+                    this.save("popupColor",value);
                 }
             },
             {
+                id:"popupTextColor",
                 name:"弹窗文字颜色",
                 type:"color",
                 value:"#ffffff",
                 description:"选择弹窗文字颜色",
                 onChange:(value)=>{
-                    console.log(value);
+                    this.save("popupTextColor",value);
                 }
             },
             {
+                id:"popupFontSize",
                 name:"弹窗字体大小",
                 type:"number",
                 value:32,
                 description:"选择弹窗字体大小",
                 onChange:(value)=>{
-                    console.log(value);
+                    this.save("popupFontSize",value);
                 } 
             },
             {
+                id:"popupBorder",
                 name:"弹窗启用边框",
                 type:"checkbox",
                 value:false,
                 description:"选择是否启用边框",
                 onChange:(value)=>{
-                    console.log(value);  
+                    this.save("popupBorder",value);
                 }
             },
             {
+                id:"popupBorderColor",
                 name:"弹窗边框颜色",
                 type:"color",
                 value:"#000000",
                 description:"选择边框颜色",
                 onChange:(value)=>{
-                    console.log(value);
+                    this.save("popupBorderColor",value);
                 }
             },
             {
+                id:"popupBorderWidth",
                 name:"弹窗边框宽度",
                 type:"number",
                 value:1,
                 description:"选择边框宽度",
                 onChange:(value)=>{
-                    console.log(value);
+                    this.save("popupBorderWidth",value);
                 } 
             },
             {
+                id:"popupBorderRadius",
                 name:"弹窗圆角",
                 type:"number",
                 value:5,
                 description:"选择边框圆角",
                 onChange:(value)=>{
-                    console.log(value);
+                    this.save("popupBorderRadius",value);
                 }  
             },
             {
+                id:"popupSpace",
                 name:"弹窗与单词的距离",
                 type:"number",
                 value:10,
                 description:"选择弹窗与单词的距离",
                 onChange:(value)=>{
-                    console.log(value);
+                    this.save("popupSpace",value);
                 }
             },
         ];
@@ -152,6 +195,7 @@ class PhoneticHelperSettings{
                     element.innerText = item.name;
                     selectElement.appendChild(element);
                 }
+                selectElement.value = option.value;
                 selectElement.addEventListener("change",()=>{
                     option.value = selectElement.value;
                     option.onChange(selectElement.value); 
