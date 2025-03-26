@@ -4,7 +4,14 @@ class PhoneticHelperSettings{
         window.addEventListener("blur",()=>{
             //window.close();
         })
-        this.options = [
+        this.options = this.initOptions();
+        this.render();
+    }
+    /**
+     * 初始化选项
+     */
+    initOptions(){
+        return [
             {
                 name:"启用",
                 type:"checkbox",
@@ -54,7 +61,7 @@ class PhoneticHelperSettings{
             {
                 name:"弹窗字体大小",
                 type:"number",
-                value:16,
+                value:32,
                 description:"选择弹窗字体大小",
                 onChange:(value)=>{
                     console.log(value);
@@ -95,9 +102,17 @@ class PhoneticHelperSettings{
                 onChange:(value)=>{
                     console.log(value);
                 }  
-            }
+            },
+            {
+                name:"弹窗与单词的距离",
+                type:"number",
+                value:10,
+                description:"选择弹窗与单词的距离",
+                onChange:(value)=>{
+                    console.log(value);
+                }
+            },
         ];
-        this.render();
     }
     /**
      * 渲染设置页面
