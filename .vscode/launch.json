@@ -24,7 +24,8 @@
             "runtimeArgs": [
                 "--disable-extensions-except=${workspaceFolder}/src",
                 "--load-extension=${workspaceFolder}/src",
-                "--auto-open-devtools-for-tabs"
+                "--auto-open-devtools-for-tabs",
+                "--proxy-server=127.0.0.1:10809"
             ]
         }
     ]
