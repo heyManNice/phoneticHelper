@@ -2,7 +2,7 @@
 class PhoneticHelperSettings{
     constructor() {
         window.addEventListener("blur",()=>{
-            //window.close();
+            window.close();
         })
         this.options = this.initOptions();
         this.loadAllSettings(()=>{
@@ -76,23 +76,23 @@ class PhoneticHelperSettings{
                 } 
             },
             {
-                id:"popupColor",
+                id:"popupBackgroundColor",
                 name:"弹窗背景颜色",
                 type:"color",
                 value:"#000000",
                 description:"选择弹窗背景颜色",
                 onChange:(value)=>{
-                    this.save("popupColor",value);
+                    this.save("popupBackgroundColor",value);
                 }
             },
             {
-                id:"popupTextColor",
+                id:"popupColor",
                 name:"弹窗文字颜色",
                 type:"color",
                 value:"#ffffff",
                 description:"选择弹窗文字颜色",
                 onChange:(value)=>{
-                    this.save("popupTextColor",value);
+                    this.save("popupColor",value);
                 }
             },
             {
@@ -139,7 +139,7 @@ class PhoneticHelperSettings{
                 id:"popupBorderRadius",
                 name:"弹窗圆角",
                 type:"number",
-                value:5,
+                value:0,
                 description:"选择边框圆角",
                 onChange:(value)=>{
                     this.save("popupBorderRadius",value);

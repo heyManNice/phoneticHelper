@@ -3,8 +3,43 @@
 class PhoneticHerper {
     constructor() {
         this.print("Script loaded");
-        this.init();
-        this.checkNewWords();
+        this.options = {
+            enable:true,
+        };
+        this.loadAllSettings(()=>{
+            const enable = this.options["enable"];
+            if(!enable){
+                return;
+            }
+            this.init();
+            this.checkNewWords();
+        });
+        chrome.storage.local.onChanged.addListener((changes,namespace)=>{
+            for(const key in changes){
+                this.options[key] = changes[key].newValue;
+                
+            }
+        });
+    }
+    /**
+     * 加载所有设置后执行操作
+     * @param {Function} callback 回调函数
+     */
+    loadAllSettings(callback){
+        chrome.storage.local.get(null,(res)=>{
+            for(const key in res){
+                if(!this.options){
+                    this.options = {};
+                }
+                this.options[key] = res[key];
+                
+            }
+            console.log("Options loaded",this.options);
+            
+            if(callback){
+                callback(); 
+            }
+        });
     }
     /**
      * 初始化代码
@@ -130,14 +165,41 @@ class PhoneticHerper {
      * @param {HTMLElement}单词所在的元素
      */
     async popup(element){
+        const enable = this.options["enable"];
+        if(!enable){
+            return;
+        }
         //设置单词
         const res = await this.query(element.innerText);
-        const us = res?res.us:"not found";
-        this.popupElement.innerText = `/${us}/`
+
+        const phonetic = this.options["phonetic"]??"us";
+        let phoneticStr = "not found";
+        if(res){
+            phoneticStr = res[phonetic]??"not found";
+        }
+        this.popupElement.innerText = `/${phoneticStr}/`
         this.popupElement.style.display = "block";//先显示才获取大小信息
+        //设置样式
+        const popupBorder = this.options["popupBorder"]??false;
+        if(popupBorder){
+            const popupBorderColor = this.options["popupBorderColor"]??"#000000";
+            const popupBorderWidth = this.options["popupBorderWidth"]??1;
+            this.popupElement.style.border = `${popupBorderWidth}px solid ${popupBorderColor}`;
+        }else{
+            this.popupElement.style.border = "none"; 
+        }
+        const popupFontSize = this.options["popupFontSize"]??32;
+        this.popupElement.style.fontSize = `${popupFontSize}px`;
+        const popupBackgroundColor = this.options["popupBackgroundColor"]??"#000000";
+        const popupColor = this.options["popupColor"]??"#ffffff";
+        this.popupElement.style.backgroundColor = popupBackgroundColor;
+        this.popupElement.style.color = popupColor;
+
+        const popupBorderRadius = this.options["popupBorderRadius"]??0;
+        this.popupElement.style.borderRadius = `${popupBorderRadius}px`;
 
         //单词与弹窗间隔
-        const space = 10;
+        const space = this.options["popupSpace"]??10;
 
         //获取位置信息
         const rect = element.getBoundingClientRect();
