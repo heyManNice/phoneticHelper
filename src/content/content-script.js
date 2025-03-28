@@ -3,47 +3,52 @@
 class PhoneticHerper {
     constructor() {
         this.print("Script loaded");
-        this.options = {
-            enable:true,
-        };
-        this.loadAllSettings(()=>{
-            const enable = this.options["enable"];
-            if(!enable){
+        this.storager = chrome.storage.local;
+        this.loadAllSettings().then((options)=>{
+            this.options = options;
+            if(this.options["enable"]===void 0){
+                this.options["enable"] = true;
+            }
+            if(!this.options["enable"]){
+                this.print("Plugin disabled");
                 return;
             }
-            this.init();
-            this.checkNewWords();
-        });
-        chrome.storage.local.onChanged.addListener((changes,namespace)=>{
+            this.enablePlugin();
+        })
+        this.storager.onChanged.addListener((changes,namespace)=>{
             for(const key in changes){
+                if(key === "enable" && changes[key].newValue === true){
+                    this.enablePlugin();
+                }
                 this.options[key] = changes[key].newValue;
-                
             }
         });
     }
     /**
-     * 加载所有设置后执行操作
-     * @param {Function} callback 回调函数
+     * 启用插件，开始分析页面上的英文单词
      */
-    loadAllSettings(callback){
-        chrome.storage.local.get(null,(res)=>{
-            for(const key in res){
-                if(!this.options){
-                    this.options = {};
+    enablePlugin(){
+        this.init();
+        this.checkNewWords();
+    }
+    /**
+     * 加载所有设置后执行操作
+     * @returns {Promise<{key:value}[]>} 所有设置
+     */
+    loadAllSettings(){
+        return new Promise((resolve)=>{
+            this.storager.get(null,(res)=>{
+                const options = {};
+                for(const key in res){
+                    options[key] = res[key];
                 }
-                this.options[key] = res[key];
-                
-            }
-            console.log("Options loaded",this.options);
-            
-            if(callback){
-                callback(); 
-            }
+                resolve(options);
+            });
         });
     }
     /**
      * 初始化代码
-     * 
+     * 该函数只在第一次执行生效
      */
     init(){
         //添加弹出框元素
@@ -69,7 +74,7 @@ class PhoneticHerper {
             debounceCheckNewWords();
         });
         observer.observe(document.body, config);
-          
+        this.init = ()=>{};
     }
     /**
      * 防抖函数
