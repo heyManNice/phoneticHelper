@@ -4,44 +4,63 @@ class PhoneticHelperSettings{
         window.addEventListener("blur",()=>{
             window.close();
         })
+        this.storager = chrome.storage.local;
+
+        /**
+         * @type {{
+         *    id:string,
+         *    name:string,
+         *    type:string,
+         *    value:any,
+         *    options:undefined|{name:string,value:any}[],
+         *    description:string,
+         *    onChange:(value:any)=>void,
+         * }[]} 选项列表
+         */
         this.options = this.initOptions();
-        this.loadAllSettings(()=>{
+        this.updateAllSettings().then(()=>{
             this.render();
-        });
-        
+        })
     }
     /**
      * 储存设置
      * @param {string} key 键
      * @param {any} value 值
      */
-     
+    
     save(key,value){
         chrome.storage.local.set({[key]:value},()=>{
-            console.log(key,value);
+            //console.log(key,value);
         });
     }
     /**
-     * 加载所有设置后执行操作
-     * @param {Function} callback 回调函数
+     * 从储存更新所有设置后执行操作
+     * @returns {Promise<void>} 所有设置
      */
-    loadAllSettings(callback){
-        chrome.storage.local.get(null,(res)=>{
-            for(const key in res){
-                console.log(key,res[key]);
-                const option = this.options.find((option)=>option.id === key);
-                if(option){
-                    option.value = res[key];
+    updateAllSettings(){
+        return new Promise((resolve)=>{
+            this.storager.get(null,(res)=>{
+                for(const key in res){
+                    const option = this.options.find((option)=>option.id === key);
+                    if(option){
+                        option.value = res[key];
+                    }
+                    resolve();
                 }
-                
-            }
-            if(callback){
-                callback(); 
-            }
+            });
         });
     }
     /**
      * 初始化选项
+     * @returns {{
+     *    id:string,
+     *    name:string,
+     *    type:string,
+     *    value:any,
+     *    options:undefined|{name:string,value:any}[],
+     *    description:string,
+     *    onChange:(value:any)=>void,
+     * }[]} 选项列表
      */
     initOptions(){
         return [
