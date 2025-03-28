@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PhoneticHelperSettings</title>
     <script defer src="./popup.js"></script>
+    <link rel="stylesheet" href="./inputStyle.css">
     <style>
         *{
             margin: 0;
@@ -17,6 +18,7 @@
             width: 20rem;
             overflow: hidden;
             padding: 0.5rem 1rem;
+            font-size: 1rem;
         }
         #phoneticHelper-settings > div{
             display: flex;
@@ -25,7 +27,14 @@
         }
         #phoneticHelper-settings > div > *{
             margin-left: auto;
-            width: 5rem;
+        }
+
+        /**深色模式*/
+        @media (prefers-color-scheme: dark) {
+            body{
+                background-color: #212121;
+                color: #f1f1f1;
+            }
         }
     </style>
 </head>
