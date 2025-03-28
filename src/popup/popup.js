@@ -4,6 +4,9 @@ class PhoneticHelperSettings{
         window.addEventListener("blur",()=>{
             window.close();
         })
+        document.addEventListener("contextmenu",(e)=>{
+            e.preventDefault(); 
+        })
         this.storager = chrome.storage.local;
 
         /**
