@@ -48,8 +48,8 @@ class PhoneticHelperSettings{
                     if(option){
                         option.value = res[key];
                     }
-                    resolve();
                 }
+                resolve();
             });
         });
     }
